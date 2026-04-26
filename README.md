@@ -2,9 +2,15 @@
 
 A from scratch library of hidden Markov models for biological sequence analysis. The library builds the classical Rabiner three problem framework (forward, Viterbi, Baum Welch) from first principles, validates it against the `hmmlearn` reference, and extends it into a full stack of bioinformatics applications: CpG island detection, bacterial gene finding with high order Markov emissions, profile HMMs, pair HMMs, and generalized hidden semi Markov models. Every core algorithm is tested against brute force enumeration and, where possible, against an established external tool.
 
+**Tests:** 42 passing, 6 skipped (external bridges) in ~17 s. **License:** MIT.
+
+![hmmgene demo](results/hmmgene_demo.png)
+
+![hmmgene profile pair](results/hmmgene_profile_pair.png)
+
 ## Foundations
 
-The theoretical setup follows Rabiner 1989 and Durbin et al 1998. The library implements the three canonical problems with careful numerical stability. Evaluation via the forward algorithm returns the log likelihood P(O | λ). Decoding via the Viterbi algorithm returns the single most likely state path. Learning via Baum Welch re estimates the parameters A, B, π by expectation maximization over one or more observation sequences. All three algorithms run in log space using the standard log sum exp trick so that long sequences do not underflow, and the outputs are validated against direct enumeration of state paths on small toy HMMs.
+The theoretical setup follows Rabiner 1989 and Durbin et al 1998. The library implements the three canonical problems with careful numerical stability. Evaluation via the forward algorithm returns the log likelihood P(O | lambda). Decoding via the Viterbi algorithm returns the single most likely state path. Learning via Baum Welch re estimates the parameters A, B, pi by expectation maximization over one or more observation sequences. All three algorithms run in log space using the standard log sum exp trick so that long sequences do not underflow, and the outputs are validated against direct enumeration of state paths on small toy HMMs.
 
 ## Applications
 

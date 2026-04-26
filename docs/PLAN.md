@@ -1,4 +1,4 @@
-# Project Plan — HMMs for Gene Prediction
+# Project Plan -- HMMs for Gene Prediction
 
 ## Goal
 Build a research-quality library (`hmmgene`) that exercises
@@ -10,28 +10,28 @@ GenBank annotation.
 
 ## Layers (increasing math depth)
 
-### Layer 0 — Foundations (probability + DP)
-- `hmm.DiscreteHMM` dataclass with (A, B, π) validation, log-space
+### Layer 0 -- Foundations (probability + DP)
+- `hmm.DiscreteHMM` dataclass with (A, B, pi) validation, log-space
   parameter storage.
-- FASTA / GenBank I/O (minimal parsers — no BioPython in core path).
+- FASTA / GenBank I/O (minimal parsers -- no BioPython in core path).
 - `log_sum_exp`, numerically-stable log-space utilities.
 
-### Layer 1 — The three classical algorithms
-- `forward(obs)`   → log P(O|λ), full α lattice
-- `backward(obs)`  → β lattice
-- `viterbi(obs)`   → (log P*, path)
-- `posteriors(obs)` → γ_t(i), ξ_t(i,j)
+### Layer 1 -- The three classical algorithms
+- `forward(obs)`   -> log P(O|lambda), full alpha lattice
+- `backward(obs)`  -> beta lattice
+- `viterbi(obs)`   -> (log P*, path)
+- `posteriors(obs)` -> gamma_t(i), xi_t(i,j)
 
 Numerical stability baked in: both scaled-forward and log-space
 variants, validated to agree to 1e-9.
 
-### Layer 2 — Learning
-- `baum_welch(sequences, n_iters)` — EM on one or many sequences,
+### Layer 2 -- Learning
+- `baum_welch(sequences, n_iters)` -- EM on one or many sequences,
   supports tied-parameter constraints.
-- `sample(length)` — simulate from an HMM for end-to-end validation.
+- `sample(length)` -- simulate from an HMM for end-to-end validation.
 - Pseudocount smoothing + Dirichlet priors.
 
-### Layer 3 — Applications
+### Layer 3 -- Applications
 **(a) Occasionally-dishonest casino** (Durbin Fig 3.5): sanity check,
 recovers fair/loaded switch on simulated rolls.
 
@@ -50,23 +50,23 @@ recovers fair/loaded switch on simulated rolls.
   annotation), test on remaining 50 kb.
 - Report sensitivity / specificity on exact start/stop matches.
 
-### Layer 4 — Profile HMMs (Eddy 1998)
+### Layer 4 -- Profile HMMs (Eddy 1998)
 - `ProfileHMM` with M / I / D architecture.
 - Build from a multiple sequence alignment via Dirichlet pseudocounts.
 - Viterbi alignment + forward scoring.
 - Apply to: align a query DNA sequence to a small RNA family profile
   (use a handful of tRNA sequences as the training alignment).
 
-### Layer 5 — Pair HMMs (Durbin ch 4)
+### Layer 5 -- Pair HMMs (Durbin ch 4)
 - 3-state pair HMM (M, X, Y).
-- Viterbi on the pair HMM recovers Needleman–Wunsch global alignment
+- Viterbi on the pair HMM recovers Needleman-Wunsch global alignment
   with affine gaps (verified against a reference NW impl).
 - Forward gives P(x, y) integrated over all alignments.
 - Posterior decoding highlights alignment uncertainty.
 
-### Layer 6 — Generalized HMM (GHMM / semi-Markov)
+### Layer 6 -- Generalized HMM (GHMM / semi-Markov)
 - `GeneralizedHMM` with state duration distributions f_S(d).
-- Viterbi over GHMMs (O(T² × N²) naive, O(T × N²) with known max
+- Viterbi over GHMMs (O(T^2 x N^2) naive, O(T x N^2) with known max
   duration per state).
 - Minimal GENSCAN-style gene model for bacteria: intergenic + full
   gene (start, triplet-coding, stop) with duration = multiple of 3
@@ -77,8 +77,8 @@ recovers fair/loaded switch on simulated rolls.
 
 | # | Deliverable | Layer | Budget |
 |---|-------------|-------|--------|
-| M1 | DiscreteHMM + log-space fwd/bwd/Viterbi + tests | 0–1 | 1 session |
-| M2 | Baum-Welch + occasionally-dishonest casino demo | 2–3a | 1 session |
+| M1 | DiscreteHMM + log-space fwd/bwd/Viterbi + tests | 0-1 | 1 session |
+| M2 | Baum-Welch + occasionally-dishonest casino demo | 2-3a | 1 session |
 | M3 | CpG islands + BRCA1 real-data demo + viz | 3b | 1 session |
 | M4 | Bacterial gene finder + E. coli benchmark | 3c | 1 session |
 | M5 | Profile HMM from MSA | 4 | 1 session |
@@ -96,18 +96,18 @@ recovers fair/loaded switch on simulated rolls.
 - NumPy for lattice DP; SciPy.special.logsumexp.
 - matplotlib for visualization.
 - pytest for tests.
-- **No** BioPython in the core path — we parse FASTA / GenBank
+- **No** BioPython in the core path -- we parse FASTA / GenBank
   ourselves to keep the math transparent.
 
 ## Success criteria
 - Synthetic-data test: Baum-Welch on sequences sampled from a known
-  HMM recovers parameters within 0.05 (discrete states, T ≥ 1000).
+  HMM recovers parameters within 0.05 (discrete states, T >= 1000).
 - CpG-islands: Viterbi correctly re-discovers implanted CpG-rich
-  regions in a synthetic test at ≥ 95% per-base accuracy.
-- Bacterial gene finder: achieves ≥ 80% sensitivity on the E. coli
+  regions in a synthetic test at >= 95% per-base accuracy.
+- Bacterial gene finder: achieves >= 80% sensitivity on the E. coli
   test set (exact stop-codon match), using parameters trained on the
   train set.
 - Pair HMM alignment agrees with a reference NW implementation on 20
   random sequence pairs.
 - Profile HMM scores homologous queries above the background null at
-  E-value ≤ 1e-3.
+  E-value <= 1e-3.

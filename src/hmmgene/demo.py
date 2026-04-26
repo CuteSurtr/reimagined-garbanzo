@@ -21,7 +21,7 @@ def section(title: str) -> None:
 
 def main() -> None:
     RESULTS.mkdir(exist_ok=True)
-    section('1. Dishonest casino — Viterbi + Baum-Welch')
+    section('1. Dishonest casino -- Viterbi + Baum-Welch')
     hmm = dishonest_casino_hmm()
     rng = np.random.default_rng(0)
     true_s, rolls = hmm.sample(500, rng=rng)
@@ -31,9 +31,9 @@ def main() -> None:
     init = DiscreteHMM(A=np.array([[0.7, 0.3], [0.5, 0.5]]), B=np.array([[1 / 6] * 6, [1 / 6] * 6]), pi=np.array([0.5, 0.5]))
     _, train = hmm.sample(5000, rng=np.random.default_rng(1))
     logliks = init.baum_welch([train], n_iters=40)
-    print(f'  Baum-Welch LL: {logliks[0]:.1f} → {logliks[-1]:.1f}')
+    print(f'  Baum-Welch LL: {logliks[0]:.1f} -> {logliks[-1]:.1f}')
     print(f'  recovered P(6 | Loaded) = {init.B[1, 5]:.3f}  (truth: 0.500)')
-    section('2. CpG islands — synthetic implanted island + real HBB region')
+    section('2. CpG islands -- synthetic implanted island + real HBB region')
     cpg = build_cpg_hmm()
     rng = np.random.default_rng(42)
     from hmmgene.cpg import DURBIN_P_PLUS, DURBIN_P_MINUS
@@ -74,13 +74,13 @@ def main() -> None:
     print(f"  exact stop sens   = {scores['exact']['sensitivity']:.2%}  (TP={scores['exact']['TP']})")
     print(f"  per-base sens     = {scores['bp']['sensitivity']:.2%}")
     print(f"  per-base spec     = {scores['bp']['specificity']:.2%}")
-    section('4. Gaussian HMM — 2-state regime switching')
+    section('4. Gaussian HMM -- 2-state regime switching')
     gh = GaussianHMM(A=np.array([[0.95, 0.05], [0.1, 0.9]]), pi=np.array([0.5, 0.5]), means=np.array([[0.0], [4.0]]), covars=np.array([[[1.0]], [[1.0]]]))
     rng = np.random.default_rng(7)
     true_s, obs_g = gh.sample(400, rng=rng)
     _, dec_g = gh.viterbi(obs_g)
     print(f'  Gaussian HMM Viterbi accuracy = {(dec_g == true_s).mean():.3f}')
-    section('5. GHMM — two-state duration-aware segmentation')
+    section('5. GHMM -- two-state duration-aware segmentation')
     rng = np.random.default_rng(8)
 
     def emit_factory(p0):
@@ -114,18 +114,18 @@ def main() -> None:
         s_random = p.viterbi(random_seq)
         print(f'  Viterbi score (tRNA member)  = {s_member:.2f}')
         print(f'  Viterbi score (random DNA)   = {s_random:.2f}')
-        print(f'  → separation = {s_member - s_random:.2f} bits')
+        print(f'  -> separation = {s_member - s_random:.2f} bits')
     section('6b. External head-to-head: pyrodigal vs our gene finder on E. coli')
     try:
         from .external.prodigal_bench import head_to_head
         hh = head_to_head(test_seq, test_iv, preds, stop_tol=9)
-        print(f'  ┌────────────┬──────────┬──────────────┬──────────────┬──────────────┐')
-        print(f'  │            │  n pred  │ exact-stop   │ per-base sens│ per-base spec│')
-        print(f'  ├────────────┼──────────┼──────────────┼──────────────┼──────────────┤')
+        print(f'  ??????????????????????????????????????????????????????????????????????')
+        print(f'  ?            ?  n pred  ? exact-stop   ? per-base sens? per-base spec?')
+        print(f'  ??????????????????????????????????????????????????????????????????????')
         for name in ('hmmgene', 'prodigal'):
             r = hh[name]
-            print(f"  │ {name:<10} │ {r['n_predictions']:>6}   │  {r['exact']['sensitivity']:>10.1%}  │  {r['bp']['sensitivity']:>10.1%}  │  {r['bp']['specificity']:>10.1%}  │")
-        print(f'  └────────────┴──────────┴──────────────┴──────────────┴──────────────┘')
+            print(f"  ? {name:<10} ? {r['n_predictions']:>6}   ?  {r['exact']['sensitivity']:>10.1%}  ?  {r['bp']['sensitivity']:>10.1%}  ?  {r['bp']['specificity']:>10.1%}  ?")
+        print(f'  ??????????????????????????????????????????????????????????????????????')
     except ImportError as e:
         print(f'  (skipped: {e})')
     section('6c. External head-to-head: pyhmmer (HMMER3) on real Pfam HTH search')
@@ -143,7 +143,7 @@ def main() -> None:
             for h in hits:
                 print(f'    - {h.query:<14} score={h.score:>6.1f}  E={h.e_value:>.2e}  region [{h.start:>4}..{h.end:<4}]')
             if not hits:
-                print('  (no hits — E-value calibration correctly rejects all queries)')
+                print('  (no hits -- E-value calibration correctly rejects all queries)')
         else:
             print('  (Pfam HMM file not present)')
     except ImportError as e:
@@ -157,11 +157,11 @@ def main() -> None:
         ours_L, ref_L = compare_forward_loglik(hmm, obs_xc)
         ours_p, ref_p = compare_viterbi_path(hmm, obs_xc)
         agree = float((ours_p == ref_p).mean())
-        print(f'  forward log-likelihood  —  ours {ours_L:.4f}   hmmlearn {ref_L:.4f}   Δ={abs(ours_L - ref_L):.2e}')
-        print(f'  Viterbi path agreement  —  {agree:.1%}')
+        print(f'  forward log-likelihood  --  ours {ours_L:.4f}   hmmlearn {ref_L:.4f}   Delta={abs(ours_L - ref_L):.2e}')
+        print(f'  Viterbi path agreement  --  {agree:.1%}')
     except ImportError as e:
         print(f'  (skipped: {e})')
-    section('7. Pair HMM — Viterbi + forward + posterior')
+    section('7. Pair HMM -- Viterbi + forward + posterior')
     ph = simple_pair_hmm(match_prob=0.85)
     x = encode_dna('ACGTACGT')
     y = encode_dna('ACGACGT')
@@ -171,20 +171,20 @@ def main() -> None:
     row1 = ''.join(('-' if a == -1 else 'ACGT'[a] for a, _ in aln))
     row2 = ''.join(('-' if b == -1 else 'ACGT'[b] for _, b in aln))
     print(f'  Viterbi score = {sv:.3f}')
-    print(f'  forward logP  = {sf:.3f}  (forward ≥ Viterbi)')
+    print(f'  forward logP  = {sf:.3f}  (forward >= Viterbi)')
     print(f'  {row1}')
     print(f'  {row2}')
     if HAVE_MPL:
-        section('8. Figures → results/')
+        section('8. Figures -> results/')
         fig, axs = plt.subplots(2, 2, figsize=(12, 8))
         viz.plot_state_trajectory(rolls[:300], true_s[:300], dec[:300], [], [], ax=axs[0][0])
-        axs[0][0].set_title('Casino — Viterbi')
+        axs[0][0].set_title('Casino -- Viterbi')
         viz.plot_log_likelihood_trace(logliks, ax=axs[0][1])
         viz.plot_state_diagram(hmm.A, hmm.state_names or ['F', 'L'], ax=axs[1][0], title='Casino HMM state diagram')
         if hbb_file.exists():
             post_hbb = posterior_island_probability(hbb[:10000], cpg)
             islands_hbb = predict_islands(hbb[:10000], cpg)
-            viz.plot_cpg_prediction(hbb[:10000], islands_hbb, post_hbb, ax=axs[1][1], title='CpG — HBB β-globin 10 kb')
+            viz.plot_cpg_prediction(hbb[:10000], islands_hbb, post_hbb, ax=axs[1][1], title='CpG -- HBB beta-globin 10 kb')
         fig.tight_layout()
         fig.savefig(RESULTS / 'hmmgene_overview.png', dpi=140, bbox_inches='tight')
         print(f"  wrote {RESULTS / 'hmmgene_overview.png'}")
